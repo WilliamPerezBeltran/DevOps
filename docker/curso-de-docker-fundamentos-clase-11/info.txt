@@ -1,0 +1,12 @@
+python -m flask run
+
+
+Desde la ruta del Dockerfile corremos:
+- docker build -t app_python .
+
+Ejecutamos la creacion del contenedor:
+- docker run -it --rm -d -p 8081:5000 --name web_app_python app_python
+
+luego en el browser ejecutamos:
+- http://localhost:8081/getMyInfo
+
