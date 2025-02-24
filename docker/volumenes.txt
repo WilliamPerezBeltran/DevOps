@@ -1,0 +1,29 @@
+Resumen
+
+Docker: Manejo y potencial de los volúmenes
+
+Docker ha revolucionado el mundo del desarrollo de aplicaciones con diversas características poderosas, entre las cuales destaca el uso de volúmenes. Estos no son meros espacios de almacenamiento, sino que actúan como puentes dinámicos de datos entre nuestro entorno local y los contenedores ejecutándose en Docker, permitiendo una interacción directa y en tiempo real con nuestras aplicaciones. Vamos a desvelar esta funcionalidad y explorar cómo aprovechar su potencial en distintos escenarios.
+
+¿Qué son los volúmenes en Docker?
+Los volúmenes en Docker ofrecen la capacidad de compartir una unidad de disco o carpeta entre tu equipo local y un contenedor activo. Importante distinguir, estamos hablando de contenedores y no imágenes Docker; son entidades ya en ejecución que permiten la manipulación de datos en vivo.
+
+¿Cuáles son los escenarios de uso de los volúmenes?
+Los volúmenes sirven en múltiples contextos. Por ejemplo, podrías querer actualizar un sitio web en tiempo real sin detener tu contenedor. O tal vez, en análisis de datos, necesitas insertar nuevos datos mientras procesos están corriendo. Los volúmenes son clave para mantener esa fluidez de trabajo.
+
+¿Cómo configurar un volumen en Docker?
+Configurar un volumen es simple y aquí te muestro cómo:
+
+Paso 1: Dentro de tu entorno local, crear una carpeta (por ejemplo, assets) para alojar los archivos a compartir.
+Paso 2: Preparar tu Dockerfile o el comando de ejecución de Docker con el parámetro -v, especificando la ruta local y su destino en el contenedor.
+Paso 3: Ejecutar el contenedor con la configuración de volumen y verificar su funcionamiento mediante Docker Desktop o comandos como docker ps.
+¿Cómo afectan los cambios locales al contenedor?
+Cuando usas volúmenes, los cambios que realices localmente, como actualizar un archivo HTML o eliminar una imagen, se reflejarán instantáneamente en el contenedor. Esto te permite iterar de manera ágil sobre tu proyecto sin la necesidad de reiniciar o reconstruir el contenedor.
+
+¿Cuál es la diferencia entre volumen y copiar en Docker?
+La decisión de utilizar volumen o el comando COPY en tu Dockerfile depende del flujo de trabajo que desees emplear:
+
+Uso de volúmenes: Ideal para proyectos dinámicos donde los archivos y datos cambian con frecuencia.
+Uso del comando COPY: Mejor para proyectos estáticos, donde los recursos no necesitarán actualizaciones posteriores al despliegue inicial.
+Elegir apropiadamente entre crear un volumen o copiar información dentro de tu imagen de Docker puede ser decisivo para la eficiencia y agilidad de tu proyecto. 
+
+
