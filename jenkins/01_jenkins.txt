@@ -1,0 +1,118 @@
+Resumen
+
+Jenkins es open source y probablemente el software de automatización más usado de todos, escrito en Java y corre en JVM. Es muy conveniente al ser una herramienta extensible al tener un ecosistema de plugins que te permiten extenderlo, puedes escribir tus propios plugins con Java, pero ya la comunidad ha desarrollado un sinfín de ellos.
+
+También nos permite escalar de manera horizontal y verticalmente, puede correr un sin número de trabajos concurrentemente en una sola máquina y si esa máquina no da abasto se le puede dar más recursos a Jenkins. O una máquina no es suficiente entonces Jenkins nos permite escalar horizontalmente con ““slaves”” y controlar varios nodos para que trabajen por él.
+
+Jenkins siempre esta siendo innovado y teniendo actualizaciones de seguridad, esto es importante porque es el target más grande de seguridad de una empresa porque lo tiene todo.
+
+Algo que Jenkins ha trabajado mucho en los últimos años es que puedes escribir tus ““jobs”” o unidades de trabajo en código. Nosotros queremos que nuestra automatización también sea programática, no solo los comando a ejecutar sino poder migrar nuestro trabajo a un nuevo Jenkins de manera reproducible. Han creado Pipelines as code
+
+
+
+La parte más importante de Jenkins, los Jobs (los trabajos que ejecuta). Jenkins puede hacer varios trabajos al tiempo, esto es controlado por el Build Executor. Por cada job, Jenkins crea un folder dentro de su workspace (/var/lib/jenkins/workspace/). Un build es una ejecución de un Job. Cada job tiene su Build History.
+
+Jobs (los trabajos que ejecuta)==> jobs concuerrentes con "Build Executor"
+    =>  Un build es una ejecucion de un job
+    =>  Por cada job, Jenkins crea un folder dentro de su workspace (/var/lib/jenkins/workspace/). 
+		=>  Un build es una ejecución de un Job. Cada job tiene su Build History.
+
+Resumen
+
+En esta clase veremos la unidad más importante de Jenkins, los trabajos(Jobs) que ejecuta, puede correr varios de estos a la vez y es controlado por el Build Executor.
+
+Podemos tener Jobs de diferentes tipos como Freestyle project, Pipeline, folder, Multi-configuration project, etc.
+
+Cada vez que ocurre una ejecución de un Job se añade un numero al Build History y sirve para tener auditorias de cuál trabajo fue el último success o fail.
+
+i========
+
+Primero instalamos el plugin Parameterized Trigger, igual cómo instalamos anteriormente y reiniciamos.
+
+Luego vamos a crear 2 jobs nuevos: watchers: En este job, vamos a configure y vamos a “Build after other projects are built” y escribimos y escribimos hello-platzi, sí hello-platzi es successful, quiero que se ejecute watchers. Y en la parte de executed shell, escribimos : echo “Running after hello-platzi success” y guardamos. parameterized: Acepta parámetros cuando lo llamo. Marcamos la opción “ This project is parameterized” y en el name escribimos ROOT_ID. Y en el execute shell: echo “calle with $ROOT_ID” y guardamos.
+
+Y en hello-platzi, en Downstream project, y estos se añaden cuando jenkins se da cuenta que su job tiene una dependencia con otro. Vamos al configure de hello-platzi y en el execute shell escribimos: echo “Hello Platzi from $NAME” Y añadir un build step que se llama : “Trigger/call build on other projects”, y en projects to build escribimos parameterized y le damos en añadir parámetros, luego parámetros predefinidos y escribimos: ROOT_ID=$BUILD_NUMBER BUILD_NUMBER es una variable de entorno, que es el valor de esta ejecución y guardamos.
+
+Le damos en “build with parameters” y entramos al console output de parameterized y vemos que la ejecución número tal, fue la que ejecutó a parameterized. Corre hello-platzi, él llama declarativamente a parameterized e indirectamente a watchers.
+
+Corre los test para esta versión, cuando acabes, mandame esta versión a producción le pasó el id del commit, y se lo pasó a mí job que hace deployment y cuando lo resuelvas me lo despliegas. El sabe la cadena de ejecuciones que tuvo, y cuál fue el que inició este proceso. El profe recomienda usar parameterized jobs en vez de watchers, porque cuando uso watchers solo tengo tres opciones mientras que con parameterized jobs tengo más opciones.
+
+
+
+===========
+
+
+Es posible conectar un repositorio de GitHub a Jenkins para que cada vez que exista un push se haga un build del source code. Para que esto sea posible debemos realizar cambios tanto en Jenkins como en GitHub.
+
+En Jenkins:
+
+1- Debemos tener el GitHub plugin instalado
+2- Al crear el Job, debemos marcar el SCM la opción de Git, y pegar la URL del repo. (Para esta acción el host de Jenkins debe tener instalado Git)
+3- En el apartado "branches to build" si dejamos en blanco tomara en cuenta cualquier branch.
+4- En "Build Triggers" debemos marcar la opción "GitHub hook trigger for GITScm polling"
+
+En GitHub:
+
+1- Vamos al repo de GitHub.
+2- Entramos en Settings -> Webhooks.
+3- Añadimos un nuevo Webhook.
+4- Añadimos la Payload URL. (Si la URL no acaba en /github-webhook/ GItHub lanzara un error.)
+5- Marcar "Just the push event"
+
+========================
+
+Pipelines nos permiten configurar nuestros Jobs con código en lugar de hacerlo en la interfaz visual. En Jenkins los hay de dos maneras: Scripting y Declarative.
+
+Pipeline concepts The following concepts are key aspects of Jenkins Pipeline, which tie in closely to Pipeline syntax (see the overview below).
+
+1. Pipeline: A Pipeline is a user-defined model of a CD pipeline. A Pipeline’s code defines your entire build process, which typically includes stages for building an application, testing it and then delivering it.
+
+2. Node: A node is a machine which is part of the Jenkins environment and is capable of executing a Pipeline.
+
+3. Stage: A stage block defines a conceptually distinct subset of tasks performed through the entire Pipeline (e.g. "Build", "Test" and "Deploy" stages), which is used by many plugins to visualize or present Jenkins Pipeline status/progress. [6]
+
+4. Step: A single task. Fundamentally, a step tells Jenkins what to do at a particular point in time (or "step" in the process). For example, to execute the shell command make use the sh step: sh 'make'. When a plugin extends the Pipeline DSL, [1] that typically means the plugin has implemented a new step.
+
+
+
+========================
+
+Cuando creas un job que ya tiene un pipeline asociado puedes ir a "pipeline syntax" y donde esta el "sample step" te dice todo lo que tiene disponible y te puede mostrar como se veria ese bloque cuando clickeamos en GENERATE PIPELINE SCRIPT.
+
+Con "build a job" se puede hacer lo mismo que con trigger job.
+
+Si vamos a la ultima ejecución, encontraremos el botón de REPLAY que nos va a mostrar el script. Esto nos va a permitir modificar ese script agregandole el script pipeline que armamos antes.
+
+Ej: Stage(‘Run Remote) { Steps { EL SCRIPT QUE NOS DIO GENERATE PIPELINE SCRIPT } }
+
+========================
+Los Slaves nos permiten correr Jobs distribuidamente. Se conecta al Jenkins master y este le delega trabajos al Slave como si fuese otra máquina puede ser virtual, física como quieras hacerlo, nos permite escalar horizontalmente.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
